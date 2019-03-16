@@ -1,40 +1,29 @@
-import csv
-
+import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import metrics
-from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-with open('tic_tac_toe.txt') as file:
-    lines_count = sum(1 for line in file)
+feature_encodings = {b'o': 0, b'x': 1, b'b': 2}
+label_encodings = {b'negative': 0, b'positive': 1}
+converters = dict.fromkeys(range(0, 9), feature_encodings.get)
+converters[9] = label_encodings.get
 
-features_encoder = LabelEncoder()
-features_encoder.fit(['o', 'x', 'b'])
-labels_encoder = LabelEncoder()
-labels_encoder.fit(['negative', 'positive'])
+samples = np.loadtxt('tic_tac_toe.txt', delimiter=',', dtype=np.uint8, converters=converters)
+X = samples[:, :-1]
+y = samples[:, -1].transpose()
 
-features_matrix = np.zeros((lines_count, 9), np.int8)
-labels = np.zeros(lines_count, np.uint8)
+test_sizes = np.concatenate((np.arange(0.01, 1, 0.05),
+                             np.arange(0.9, 1, 0.005)))
+scores = []
+for test_size in test_sizes:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
 
-with open('tic_tac_toe.txt') as file:
-    for i, values in enumerate(csv.reader(file)):
-        *features, label = values
-        features_matrix[i] = features_encoder.transform(features)
-        labels[i] = labels_encoder.transform([label])
+    bayes = GaussianNB()
+    bayes.fit(X_train, y_train)
 
-test_case_count = 50
-test_row_indexes = np.random.choice(features_matrix.shape[0], test_case_count, True)
-test_feature_matrix = features_matrix[test_row_indexes, :]
-test_labels = labels[test_row_indexes]
+    scores.append(bayes.score(X_test, y_test))
+    print('{}/{} ({}) score {:.2f}'.format(
+        y_train.shape[0], y_test.shape[0], test_size, scores[-1]))
 
-features_matrix = np.delete(features_matrix, test_row_indexes, 0)
-labels = np.delete(labels, test_row_indexes)
-
-model = GaussianNB()
-model.fit(features_matrix, labels)
-
-expected = test_labels
-predicted = model.predict(test_feature_matrix)
-print(metrics.accuracy_score(expected, predicted))
-print(metrics.classification_report(expected, predicted, labels))
-print(metrics.confusion_matrix(expected, predicted))
+plt.plot(test_sizes, scores)
+plt.show()

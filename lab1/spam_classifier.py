@@ -1,41 +1,26 @@
-import csv
-
+import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import metrics
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-with open('spam.csv') as file:
-    features_count = -1
-    reader = csv.reader(file)
-    for row in reader:
-        if features_count == -1:
-            features_count = len(row) - 2  # do not count first and last columns
-    lines_count = reader.line_num - 1
+label_encodings = {b'nonspam': 0, b'spam': 1}
 
-features_matrix = np.zeros((lines_count, features_count), np.float32)
-labels = np.zeros(lines_count, np.int8)
+X = np.loadtxt('spam.csv', delimiter=',', skiprows=1, usecols=range(1, 58))
+y = np.loadtxt('spam.csv', delimiter=',', skiprows=1, usecols=58,
+               dtype=np.uint8, converters={58: label_encodings.get})
 
-with open('spam.csv') as file:
-    for i, row in enumerate(csv.reader(file), start=-1):
-        if i == -1:
-            continue
-        index, *features, label = row
-        features_matrix[i] = features
-        labels[i] = 1 if label.strip() == 'spam' else -1
+test_sizes = np.concatenate((np.arange(0.01, 1, 0.05),
+                             np.arange(0.9, 1, 0.005)))
+scores = []
+for test_size in test_sizes:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
 
-test_case_count = 100
-test_row_indexes = np.random.choice(features_matrix.shape[0], test_case_count, True)
-test_feature_matrix = features_matrix[test_row_indexes, :]
-test_labels = labels[test_row_indexes]
+    bayes = GaussianNB()
+    bayes.fit(X_train, y_train)
 
-features_matrix = np.delete(features_matrix, test_row_indexes, 0)
-labels = np.delete(labels, test_row_indexes)
+    scores.append(bayes.score(X_test, y_test))
+    print('{}/{} ({}) score {:.2f}'.format(
+        y_train.shape[0], y_test.shape[0], test_size, scores[-1]))
 
-model = GaussianNB()
-model.fit(features_matrix, labels)
-
-expected = test_labels
-predicted = model.predict(test_feature_matrix)
-print(metrics.accuracy_score(expected, predicted))
-print(metrics.classification_report(expected, predicted, labels))
-print(metrics.confusion_matrix(expected, predicted))
+plt.plot(test_sizes, scores)
+plt.show()

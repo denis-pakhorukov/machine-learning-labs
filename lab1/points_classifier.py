@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import normal
-from sklearn import metrics
 from sklearn.naive_bayes import GaussianNB
 
 
@@ -12,15 +11,12 @@ def generate_data_set(mean1, mean2, stdev1, mean3, mean4, stdev2, size):
 
 
 args = dict(mean1=10, mean2=14, stdev1=4, mean3=20, mean4=18, stdev2=3)
-size = 50
-test_size = 100
-feature_matrix, labels = generate_data_set(**args, size=size)
-test_feature_matrix, test_labels = generate_data_set(**args, size=test_size)
+X_train, y_train = generate_data_set(**args, size=50)
+X_test, y_test = generate_data_set(**args, size=50)
 
-model = GaussianNB()
-model.fit(feature_matrix, labels)
-print(metrics.accuracy_score(test_labels, model.predict(test_feature_matrix)))
+bayes = GaussianNB()
+bayes.fit(X_train, y_train)
+print(bayes.score(X_test, y_test))
 
-fig, ax = plt.subplots()
-plt.plot(feature_matrix[:size], feature_matrix[size:], 'o')
+plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.Set1)
 plt.show()
