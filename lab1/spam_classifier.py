@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-label_encodings = {b'nonspam': 0, b'spam': 1}
+label_encodings = {b'"nonspam"': 0, b'"spam"': 1}
 
 X = np.loadtxt('spam.csv', delimiter=',', skiprows=1, usecols=range(1, 58))
 y = np.loadtxt('spam.csv', delimiter=',', skiprows=1, usecols=58,
