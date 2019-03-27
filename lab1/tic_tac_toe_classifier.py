@@ -12,8 +12,8 @@ samples = np.loadtxt('tic_tac_toe.txt', delimiter=',', dtype=np.uint8, converter
 X = samples[:, :-1]
 y = samples[:, -1].transpose()
 
-test_sizes = np.concatenate((np.arange(0.01, 1, 0.05),
-                             np.arange(0.9, 1, 0.005)))
+test_sizes = np.concatenate((np.arange(0.01, 0.9, 0.05),
+                             np.arange(0.9, 1, 0.01)))
 scores = []
 for test_size in test_sizes:
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
