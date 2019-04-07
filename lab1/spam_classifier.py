@@ -13,7 +13,8 @@ test_sizes = np.concatenate((np.arange(0.01, 0.9, 0.05),
                              np.arange(0.9, 1, 0.01)))
 scores = []
 for test_size in test_sizes:
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=15424)
 
     bayes = GaussianNB()
     bayes.fit(X_train, y_train)

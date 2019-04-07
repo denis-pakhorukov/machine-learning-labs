@@ -10,7 +10,7 @@ samples = np.loadtxt('glass.csv', delimiter=',', skiprows=1,
                      usecols=range(1, 11), converters=converters)
 X = samples[:, :-1]
 y = np.array(samples[:, -1].transpose(), dtype=np.uint8)
-X_train, X_test, y_train, y_test = train_test_split(X, y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=15424)
 
 training_accuracy = []
 test_accuracy = []
