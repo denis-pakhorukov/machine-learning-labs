@@ -52,9 +52,7 @@ for i, element in enumerate(chemical_elements):
     knn.fit(reduced_X_train, y_train)
     scores.append(knn.score(reduced_X_test, y_test))
 
-fig, ax = plt.subplots()
-ax.barh(range(len(chemical_elements)), scores)
-ax.set_yticklabels(chemical_elements)
-ax.invert_yaxis()
-ax.set_xlabel('Score')
+plt.bar(range(len(chemical_elements)), scores)
+plt.xticks(range(len(chemical_elements)), chemical_elements)
+plt.ylabel('Score')
 plt.show()
