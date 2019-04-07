@@ -5,10 +5,11 @@ from sklearn.naive_bayes import GaussianNB
 
 feature_encodings = {b'o': 0, b'x': 1, b'b': 2}
 label_encodings = {b'negative': 0, b'positive': 1}
-converters = dict.fromkeys(range(0, 9), feature_encodings.get)
+converters = dict.fromkeys(range(9), feature_encodings.get)
 converters[9] = label_encodings.get
 
-samples = np.loadtxt('tic_tac_toe.txt', delimiter=',', dtype=np.uint8, converters=converters)
+samples = np.loadtxt('tic_tac_toe.txt', dtype=np.uint8,
+                     delimiter=',', converters=converters)
 X = samples[:, :-1]
 y = samples[:, -1].transpose()
 
@@ -16,7 +17,8 @@ test_sizes = np.concatenate((np.arange(0.01, 0.9, 0.05),
                              np.arange(0.9, 1, 0.01)))
 scores = []
 for test_size in test_sizes:
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=1549294)
 
     bayes = GaussianNB()
     bayes.fit(X_train, y_train)
