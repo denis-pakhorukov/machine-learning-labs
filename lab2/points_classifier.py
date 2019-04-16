@@ -8,6 +8,9 @@ samples = np.loadtxt('svmdata4.txt', delimiter='\t', skiprows=1,
 X_train = samples[:, :-1]
 y_train = np.array(samples[:, -1].transpose(), dtype=np.uint8)
 
+plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=plt.cm.Set1)
+plt.show()
+
 samples = np.loadtxt('svmdata4test.txt', delimiter='\t', skiprows=1,
                      usecols=(1, 2, 3), converters=converters)
 X_test = samples[:, :-1]
