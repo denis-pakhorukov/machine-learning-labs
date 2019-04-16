@@ -41,6 +41,10 @@ sample = np.array([[1.516, 11.7, 1.01, 1.19, 72.59, 0.43, 11.44, 0.02, 0.1]])
 [prediction] = knn.predict(sample)
 print(prediction)
 
+knn = KNeighborsClassifier()
+knn.fit(X_train, y_train)
+full_dataset_score = knn.score(X_train, y_train)
+
 with open('glass.csv') as f:
     chemical_elements = next(csv.reader(f))[1:-1]
 
@@ -52,6 +56,7 @@ for i, element in enumerate(chemical_elements):
     knn.fit(reduced_X_train, y_train)
     scores.append(knn.score(reduced_X_test, y_test))
 
+plt.bar(range(len(chemical_elements)), [full_dataset_score] * len(chemical_elements))
 plt.bar(range(len(chemical_elements)), scores)
 plt.xticks(range(len(chemical_elements)), chemical_elements)
 plt.ylabel('Score')
