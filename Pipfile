@@ -11,6 +11,7 @@ numpy = "*"
 scipy = "*"
 matplotlib = "*"
 graphviz = "*"
+mglearn = "*"
 
 [requires]
 python_version = "3.5"
